@@ -508,3 +508,4 @@ C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_
 C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\obj\Debug\net8.0\Du_Fang.pdb
 C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\obj\Debug\net8.0\Du_Fang.genruntimeconfig.cache
 C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\obj\Debug\net8.0\ref\Du_Fang.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\obj\Debug\net8.0\Du_Fang.sourcelink.json
