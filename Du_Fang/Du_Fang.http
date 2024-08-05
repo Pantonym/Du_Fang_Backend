@@ -1,0 +1,6 @@
+@Du_Fang_HostAddress = http://localhost:5234
+
+GET {{Du_Fang_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
