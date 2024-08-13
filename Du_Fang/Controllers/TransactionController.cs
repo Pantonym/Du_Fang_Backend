@@ -72,11 +72,41 @@ namespace Du_Fang.Controllers
             return NoContent();
         }
 
-        // POST: api/Transaction
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Transaction>> PostTransaction(Transaction transaction)
+        // POST: api/Transaction/AccountTransfer
+        [HttpPost("AccountTransfer")]
+        public async Task<ActionResult<Transaction>> AccountTransfer(int fromAccountId, int toAccountId, decimal amount)
         {
+            // Validate accounts, check balance, and perform transfer logic
+            var transaction = new Transaction
+            {
+                FromAccountId = fromAccountId,
+                ToAccountId = toAccountId,
+                Amount = amount,
+                TransactionType = "AccountTransfer",
+                Timestamp = DateTime.UtcNow
+            };
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
+        }
+
+        // POST: api/Transaction/StarCoinPurchase
+        [HttpPost("StarCoinPurchase")]
+        public async Task<ActionResult<Transaction>> StarCoinPurchase(int fromAccountId, decimal amount)
+        {
+            // Validate account, check balance, and perform purchase logic
+
+            var transaction = new Transaction
+            {
+                FromAccountId = fromAccountId,
+                ToAccountId = fromAccountId, //the user essentially transfers one form of money to another for themselves, and as such they are both receiver and sender.
+                Amount = amount,
+                TransactionType = "StarCoinPurchase",
+                Timestamp = DateTime.UtcNow
+            };
+
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
