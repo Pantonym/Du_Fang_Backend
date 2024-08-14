@@ -3,28 +3,34 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Du_Fang;
-
-public class User
+namespace Du_Fang
 {
-    [Key] //Shows this is the primary key
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] //shows this will be auto-incremented by the database
-    public int UserId { get; set; }
+    public class User
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserId { get; set; }
 
-    [Required]
-    public string? Username { get; set; }
+        [Required]
+        public string? Username { get; set; }
 
-    [Required]
-    public string? Email { get; set; }
+        [Required]
+        public string? Email { get; set; }
 
-    public bool IsAdmin { get; set; } //equivalent to role
+        public bool IsAdmin { get; set; }
 
-    public DateTime CreatedAt { get; set; }
+        [Required]
+        public string? PasswordHash { get; set; }
 
-    // Navigation property for the one-to-one relationship
-    public virtual User_Security? UserSecurity { get; set; }
-    // Navigation property for the one-to-many relationship with Authentication_Log
-    public virtual ICollection<Authentication_Log>? AuthenticationLogs { get; set; }
-    // Navigation property for the one-to-one relationship with Account
-    public virtual Account? Account { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        // Navigation property for the one-to-one relationship with User_Security
+        public virtual User_Security? UserSecurity { get; set; }
+
+        // Navigation property for the one-to-many relationship with Authentication_Log
+        public virtual ICollection<Authentication_Log>? AuthenticationLogs { get; set; }
+
+        // Navigation property for the one-to-one relationship with Account
+        public virtual Account? Account { get; set; }
+    }
 }
