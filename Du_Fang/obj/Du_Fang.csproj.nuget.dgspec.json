@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Open Window\\DV 300\\Term 3\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj": {}
+    "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj": {}
   },
   "projects": {
-    "F:\\Open Window\\DV 300\\Term 3\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj": {
+    "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Open Window\\DV 300\\Term 3\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
+        "projectUniqueName": "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
         "projectName": "Du_Fang",
-        "projectPath": "F:\\Open Window\\DV 300\\Term 3\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
-        "packagesPath": "C:\\Users\\marel\\.nuget\\packages\\",
-        "outputPath": "F:\\Open Window\\DV 300\\Term 3\\Du_Fang_Backend\\Du_Fang\\obj\\",
+        "projectPath": "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
+        "packagesPath": "C:\\Users\\USER-PC\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\marel\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\USER-PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -43,6 +43,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.8, )"
@@ -90,6 +94,10 @@
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[8.0.4, )"
+            },
+            "SendGrid": {
+              "target": "Package",
+              "version": "[9.29.3, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

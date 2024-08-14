@@ -32,5 +32,29 @@ namespace Du_Fang
 
         // Navigation property for the one-to-one relationship with Account
         public virtual Account? Account { get; set; }
+
+        // OTP
+        public string? Otp { get; set; }
+
+        public DateTime? OtpExpiry { get; set; }
+
+        //method to control our otp
+        public void GenerateOTP()
+        {
+            //6 digits otp
+            var random = new Random();
+            Otp = random.Next(100000, 999999).ToString(); // generate 6-digit otp
+                                                          //TODO SELF: encrypt the OTP - Argon2 (own research)
+            OtpExpiry = DateTime.UtcNow.AddMinutes(5); // 5 minutes expiry
+        }
+
+        public bool ValidateOTP(string receivedOTP)
+        {
+            // check if the received OTP/emailed is valid/match, and are we still in the 5 minute expiry window
+            return Otp == receivedOTP && OtpExpiry > DateTime.UtcNow;
+
+            // TODO self (optional): generate the JWT token
+
+        }
     }
 }

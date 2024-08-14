@@ -1,11 +1,15 @@
 using System.Text;
+using Du_Fang.Services;
 using Du_Fang;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -66,6 +70,18 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
     };
 });
+
+
+// Add SendGrid as service
+// builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGrid"));
+var ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY");
+var FromEmail = Environment.GetEnvironmentVariable("SENDGRID_FROMEMAIL");
+builder.Services.Configure<SendGridOptions>(options =>
+{
+    options.ApiKey = ApiKey;
+    options.FromEmail = FromEmail;
+});
+builder.Services.AddSingleton<EmailSender>();
 
 var app = builder.Build();
 
