@@ -1039,3 +1039,14 @@ C:\Users\USER-PC\Documents\GitHub\Du_Fang_Backend\Du_Fang\obj\Debug\net8.0\Du_Fa
 C:\Users\USER-PC\Documents\GitHub\Du_Fang_Backend\Du_Fang\obj\Debug\net8.0\ref\Du_Fang.dll
 C:\Users\USER-PC\Documents\GitHub\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\DotNetEnv.dll
 C:\Users\USER-PC\Documents\GitHub\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Sprache.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\DotNetEnv.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\SendGrid.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\Sprache.dll
+C:\Users\nicoj\Desktop\School\Year 3\DV300\Term 3\Repository\Du_Fang_Backend\Du_Fang_Backend\Du_Fang\bin\Debug\net8.0\StarkbankEcdsa.dll
