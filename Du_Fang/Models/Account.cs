@@ -20,11 +20,14 @@ public class Account
     [Required]
     public decimal Balance { get; set; }
 
+    [Required]
+    public int CoinBalance { get; set; }
+
     public bool Active { get; set; }
 
     // Navigation properties
     public virtual User? User { get; set; }
     public virtual Status? Status { get; set; }
-    public virtual ICollection<Transaction> ?TransactionsFrom { get; set; }
-    public virtual ICollection<Transaction> ?TransactionsTo { get; set; }
+    public virtual ICollection<Transaction>? TransactionsFrom { get; set; }
+    public virtual ICollection<Transaction>? TransactionsTo { get; set; }
 }
