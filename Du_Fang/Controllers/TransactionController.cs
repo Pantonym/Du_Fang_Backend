@@ -84,6 +84,8 @@ namespace Du_Fang.Controllers
                 Amount = amount,
                 TransactionType = "AccountTransfer",
                 Timestamp = DateTime.UtcNow
+
+                // TODO: Update the balance of the account (foreign key to the account, based on to and from accounts)
             };
 
             _context.Transactions.Add(transaction);
