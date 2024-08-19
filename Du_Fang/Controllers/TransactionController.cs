@@ -94,12 +94,62 @@ namespace Du_Fang.Controllers
             return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
         }
 
-        // POST: api/Transaction/StarCoinPurchase
-        [HttpPost("StarCoinPurchase")]
-        public async Task<ActionResult<Transaction>> StarCoinPurchase(int fromAccountId, decimal amount)
+        // POST: api/Transaction/AccountTopup
+        [HttpPost("AccountTopup")]
+        public async Task<ActionResult<Transaction>> AccountTopup(int fromAccountId, decimal amount)
         {
             // Validate account, check balance, and perform purchase logic
+            // --Validation
+            var account = await _context.Accounts.FindAsync(fromAccountId);
 
+            if (account == null)
+            {
+                return NotFound("Account does not exist.");
+            }
+
+            // --Update the account balance
+            account.Balance += amount;
+
+            // --Build transaction
+            var transaction = new Transaction
+            {
+                FromAccountId = fromAccountId,
+                ToAccountId = fromAccountId, //the user essentially transfers one form of money to another for themselves, and as such they are both receiver and sender.
+                Amount = amount,
+                TransactionType = "AccountTopup",
+                Timestamp = DateTime.UtcNow
+            };
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
+        }
+
+        // POST: api/Transaction/StarCoinPurchase
+        [HttpPost("StarCoinPurchase")]
+        public async Task<ActionResult<Transaction>> StarCoinPurchase(int fromAccountId, int starCoinAmount, decimal amount)
+        {
+            // Validate account, check balance, and perform purchase logic
+            // --Validation
+            var account = await _context.Accounts.FindAsync(fromAccountId);
+
+            if (account == null)
+            {
+                return NotFound("Account does not exist.");
+            }
+
+            // --Second time testing amount, to protect the user as we are working with money
+            if (account.Balance < amount)
+            {
+                return BadRequest("Insufficient balance in the account.");
+            }
+
+            // Update account and StarCoin balance
+            account.Balance -= amount;
+            account.CoinBalance += starCoinAmount;
+
+            // --Build the transaction
             var transaction = new Transaction
             {
                 FromAccountId = fromAccountId,
