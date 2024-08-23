@@ -17,64 +17,40 @@ namespace Du_Fang.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(AppDBContext context, IPasswordHasher<User> passwordHasher, IConfiguration configuration) : ControllerBase
-{
-    private readonly AppDBContext _context = context;
-    private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;
-    private readonly IConfiguration _configuration = configuration;
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = new User
-            {
-                Username = model.Username,
-                Email = model.Email,
-                CreatedAt = DateTime.UtcNow,
-                // Hash the password before saving
-                PasswordHash = _passwordHasher.HashPassword(new User(), model.Password)
-            };
-
-            Console.WriteLine($"Registering user with Username: {user.Username} and Email: {user.Email}");
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { result = "User created successfully" });
-        }
-
-        [HttpPost("login")]
-public async Task<IActionResult> Login([FromBody] LoginModel model)
-{
-    try
     {
-        // Find the user by username
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+        private readonly AppDBContext _context = context;
+        private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;
+        private readonly IConfiguration _configuration = configuration;
 
-        // Check if user exists and password is correct
-        if (user != null && !string.IsNullOrEmpty(user.PasswordHash) &&
-            _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) == PasswordVerificationResult.Success)
-        {
-            // Generate JWT token
-            var token = GenerateJwtToken(user);
+        // [HttpPost("login")]
+        // public async Task<IActionResult> Login([FromBody] LoginModel model)
+        // {
+        //     try
+        //     {
+        //         // Find the user by username
+        //         var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
 
-            // Return the user ID and token
-            return Ok(new { UserId = user.UserId, Token = token });
-        }
+        //         // Check if user exists and password is correct
+        //         if (user != null && !string.IsNullOrEmpty(user.PasswordHash) &&
+        //             _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) == PasswordVerificationResult.Success)
+        //         {
+        //             // Generate JWT token
+        //             var token = GenerateJwtToken(user);
 
-        // Return an error message if credentials are incorrect
-        return Unauthorized(new { Message = "User credentials incorrect" });
-    }
-    catch (Exception ex)
-    {
-        // Log the exception and return a 500 Internal Server Error
-        Console.Error.WriteLine($"Exception: {ex.Message}");
-        return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred while processing your request." });
-    }
-}
+        //             // Return the user ID and token
+        //             return Ok(new { UserId = user.UserId, Token = token });
+        //         }
+
+        //         // Return an error message if credentials are incorrect
+        //         return Unauthorized(new { Message = "User credentials incorrect" });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         // Log the exception and return a 500 Internal Server Error
+        //         Console.Error.WriteLine($"Exception: {ex.Message}");
+        //         return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An error occurred while processing your request." });
+        //     }
+        // }
 
         private string GenerateJwtToken(User user)
         {

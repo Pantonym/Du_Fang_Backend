@@ -13,9 +13,9 @@ public class Account
     [ForeignKey("User")]
     public int UserId { get; set; }
 
-    [Required]
+[Required]
     [ForeignKey("Status")]
-    public int AccountStatusId { get; set; }
+    public int StatusId { get; set; } 
 
     [Required]
     public decimal Balance { get; set; }

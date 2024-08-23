@@ -9,8 +9,8 @@ public class Status
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int StatusId { get; set; }
 
-    [Required]
-    public string? StatusName { get; set; }
+[Required]
+    public string StatusName { get; set; }
 
     public decimal TotalAmountCriteria { get; set; }
 

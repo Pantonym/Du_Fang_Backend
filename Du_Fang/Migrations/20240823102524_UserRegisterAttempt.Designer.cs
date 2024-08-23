@@ -3,6 +3,7 @@ using System;
 using Du_Fang;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Du_Fang.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240823102524_UserRegisterAttempt")]
+    partial class UserRegisterAttempt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +33,9 @@ namespace Du_Fang.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountId"));
 
+                    b.Property<int>("AccountStatusId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Active")
                         .HasColumnType("boolean");
 
@@ -39,15 +45,12 @@ namespace Du_Fang.Migrations
                     b.Property<int>("CoinBalance")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("AccountId");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("AccountStatusId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -115,35 +118,6 @@ namespace Du_Fang.Migrations
                     b.HasKey("StatusId");
 
                     b.ToTable("Statuses");
-
-                    b.HasData(
-                        new
-                        {
-                            StatusId = 1,
-                            AnnualInterestRate = 0.01,
-                            StatusName = "Active",
-                            TotalAmountCriteria = 0m,
-                            TransactionFee = 1m,
-                            TransactionsCriteria = 0
-                        },
-                        new
-                        {
-                            StatusId = 2,
-                            AnnualInterestRate = 0.02,
-                            StatusName = "Silver",
-                            TotalAmountCriteria = 1000m,
-                            TransactionFee = 0.5m,
-                            TransactionsCriteria = 10
-                        },
-                        new
-                        {
-                            StatusId = 3,
-                            AnnualInterestRate = 0.029999999999999999,
-                            StatusName = "Gold",
-                            TotalAmountCriteria = 10000m,
-                            TransactionFee = 0m,
-                            TransactionsCriteria = 100
-                        });
                 });
 
             modelBuilder.Entity("Du_Fang.Transaction", b =>
@@ -203,6 +177,10 @@ namespace Du_Fang.Migrations
                     b.Property<DateTime?>("OtpExpiry")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
@@ -245,7 +223,7 @@ namespace Du_Fang.Migrations
                 {
                     b.HasOne("Du_Fang.Status", "Status")
                         .WithMany("Accounts")
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("AccountStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

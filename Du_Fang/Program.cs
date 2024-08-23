@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using DotNetEnv;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,35 @@ Env.Load();
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Du_Fang API", Version = "v1" });
+    
+    // Add JWT Authentication support in Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Enter 'Bearer' [space] and then your token in the text input below.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 // Configure Entity Framework and Identity
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -32,6 +61,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<AppDBContext>()
 .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -71,9 +102,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 // Add SendGrid as service
-// builder.Services.Configure<SendGridOptions>(builder.Configuration.GetSection("SendGrid"));
 var ApiKey = Environment.GetEnvironmentVariable("SENDGRID_APIKEY");
 var FromEmail = Environment.GetEnvironmentVariable("SENDGRID_FROMEMAIL");
 builder.Services.Configure<SendGridOptions>(options =>
@@ -83,6 +112,9 @@ builder.Services.Configure<SendGridOptions>(options =>
 });
 builder.Services.AddSingleton<EmailSender>();
 
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -90,6 +122,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

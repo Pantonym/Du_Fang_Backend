@@ -1,88 +1,227 @@
-using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Du_Fang.Services;
+using Du_Fang;
+using Isopoh.Cryptography.Argon2;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using Du_Fang.DTO;
 
-
-namespace Du_Fang.Controllers;
-
-
-[Route("api/[controller]")]
-[ApiController]
-public class AuthControllerOTP : ControllerBase
+namespace Du_Fang.Controllers
 {
-    //dependency injection
-    private readonly EmailSender _emailSender;
-    private readonly AppDBContext _context;
-
-    //constructor to initialise AuthController with needed dependencies
-    public AuthControllerOTP(AppDBContext context, EmailSender emailSender)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthControllerOTP : ControllerBase
     {
-        _context = context;
-        _emailSender = emailSender;
-    }
+        private readonly EmailSender _emailSender;
+        private readonly AppDBContext _context;
+        private readonly IConfiguration _configuration;
 
-
-
-    //TODO: test the sending of our email
-    [HttpGet("test-email")]
-    public async Task<IActionResult> TestEmail()
-    {
-        string toEmail = "221345@virtualwindow.co.za";
-        string subject = "Test Email";
-        string body = "This is a test email to verify email sending functionality.";
-
-        await _emailSender.SendEmailAsync(toEmail, body, subject);
-        return Ok("Test email sent.");
-    }
-
-
-    //TODO: API to generate and save the OTP (send the email) - login
-    [HttpPost("generate—otp")]
-    public async Task<IActionResult> GenerateOtp(string email)
-    {
-        //Check to make sure that this email exists as a user in our table
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
-        if (user == null) return NotFound("User not found");
-
-        user.GenerateOTP(); //Call the functionality and save it for the user that we found in the object
-        await _context.SaveChangesAsync(); //sync the new data to our tables in the db
-
-        var otpMsg = $"Your OTP is {user.Otp}. It will expire in 5 min.";
-
-        await _emailSender.SendEmailAsync(user.Email, otpMsg, "One Time Pin for Du_Fang"); //sending otp via email
-
-        //encrypt otp before saving
-        //TODO SELF: encrypt the OTP - Argon2 (own research)
-
-        return Ok("OTP Sent.");
-    }
-
-
-    //TODO: API validate if the user has entered the correct OTP
-    [HttpPost("validate—otp")]
-    public async Task<IActionResult> ValidateOtp(OtpEmail otpEmail)
-    {
-        //Check to make sure that this email exists as a user in our table
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == otpEmail.Email);
-        if (user == null) return NotFound("User not found");
-
-        if (user.ValidateOTP(otpEmail.Otp))
+        public AuthControllerOTP(AppDBContext context, EmailSender emailSender, IConfiguration configuration)
         {
-            //valid otp
-            // TODO self (optional): JWT - pass the token here
-            return Ok("OTP is valid. Let me into the site.");
+            _context = context;
+            _emailSender = emailSender;
+            _configuration = configuration;
         }
-        else
+
+        [HttpGet("test-email")]
+        public async Task<IActionResult> TestEmail()
         {
-            return BadRequest("Invalid OTP.");
+            string toEmail = "221345@virtualwindow.co.za";
+            string subject = "Test Email";
+            string body = "This is a test email to verify email sending functionality.";
+
+            await _emailSender.SendEmailAsync(toEmail, body, subject);
+            return Ok("Test email sent.");
         }
-    }
-    public class OtpEmail
-    {
-        public string Email { get; set; }
-        public string Otp { get; set; }
+
+        [HttpPost("generate-otp")]
+        public async Task<IActionResult> GenerateOtp([FromBody] string email)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
+            if (user == null) return NotFound("User not found");
+
+            user.GenerateOTP();
+            await _context.SaveChangesAsync();
+
+            var otpMsg = $"Your OTP is {user.Otp}. It will expire in 5 min.";
+            await _emailSender.SendEmailAsync(user.Email, otpMsg, "One Time Pin for Du_Fang");
+
+            return Ok(new { message = "OTP Sent." });
+        }
+
+        [HttpPost("validate-otp")]
+        public async Task<IActionResult> ValidateOtp(OtpEmail otpEmail)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == otpEmail.Email);
+            if (user == null) return NotFound("User not found");
+
+            if (user.ValidateOTP(otpEmail.Otp))
+            {
+                var token = GenerateJwtToken(user);
+                return Ok(new { message = "OTP is valid. You are now logged in.", token });
+            }
+            else
+            {
+                return BadRequest("Invalid OTP.");
+            }
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(UserRegisterDto dto)
+        {
+            try
+            {
+                Console.WriteLine("Starting registration process");
+
+                if (await _context.Users.AnyAsync(u => u.Email == dto.Email || u.Username == dto.Username))
+                {
+                    return BadRequest(new { message = "Email or username already taken" });
+                }
+
+                Console.WriteLine("Email and username are unique");
+
+                if (string.IsNullOrEmpty(dto.Password))
+                {
+                    return BadRequest(new { message = "Password cannot be empty" });
+                }
+
+                Console.WriteLine("Password is not empty");
+
+                var argon2 = new Argon2Hash(dto.Password);
+                var hashedPassword = argon2.Hash();
+
+                if (string.IsNullOrEmpty(hashedPassword))
+                {
+                    return StatusCode(500, new { message = "Password hashing failed" });
+                }
+
+                Console.WriteLine("Password hashed successfully");
+
+                var user = new User
+                {
+                    Username = dto.Username,
+                    Email = dto.Email,
+                    CreatedAt = DateTime.UtcNow,
+                    IsAdmin = false,
+                };
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine($"User created with ID: {user.UserId}");
+
+                user.GenerateOTP();
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine("OTP generated");
+
+                var userSecurity = new User_Security
+                {
+                    UserId = user.UserId,
+                    PasswordHash = hashedPassword,
+                    LatestOTPSecret = user.Otp,
+                    UpdatedAt = DateTime.UtcNow
+                };
+
+                _context.UserSecurities.Add(userSecurity);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine("User security record created");
+
+                var account = new Account
+                {
+                    UserId = user.UserId,
+                    StatusId = 1,
+                    Balance = 0,
+                    Active = true
+                };
+
+                _context.Accounts.Add(account);
+                await _context.SaveChangesAsync();
+
+                Console.WriteLine("Account record created");
+
+                await _emailSender.SendEmailAsync(user.Email, $"Your OTP is {user.Otp}. It will expire in 5 min.", "OTP for Du_Fang Registration");
+
+                Console.WriteLine("OTP email sent");
+
+                return Ok(new { message = "Registration successful. Please verify your OTP." });
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine($"Database error during registration: {ex.Message}");
+                Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+                return StatusCode(500, new { message = $"A database error occurred during registration: {ex.InnerException?.Message ?? ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during registration: {ex}");
+                return StatusCode(500, new { message = $"An error occurred during registration: {ex.Message}" });
+            }
+        }
+
+        // [HttpPost("login")]
+        // public async Task<IActionResult> Login(UserLoginDto dto)
+        // {
+        //     var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
+        //     if (user == null)
+        //         return Unauthorized("Invalid credentials");
+
+        //     var userSecurity = await _context.UserSecurities.SingleOrDefaultAsync(us => us.UserId == user.UserId);
+        //     if (userSecurity == null)
+        //         return Unauthorized("Invalid credentials");
+
+        //     if (!VerifyPassword(dto.Password, userSecurity.PasswordHash))
+        //         return Unauthorized("Invalid credentials");
+
+        //     user.GenerateOTP();
+        //     await _context.SaveChangesAsync();
+
+        //     await _emailSender.SendEmailAsync(user.Email, $"Your OTP is {user.Otp}. It will expire in 5 min.", "OTP for Du_Fang Login");
+
+        //     return Ok(new { message = "OTP sent. Please validate to complete login." });
+        // }
+
+        private string GenerateJwtToken(User user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["Jwt:ExpireDays"]));
+
+            var token = new JwtSecurityToken(
+                _configuration["Jwt:Issuer"],
+                _configuration["Jwt:Issuer"],
+                claims,
+                expires: expires,
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private bool VerifyPassword(string plainPassword, string hashedPassword)
+        {
+            return Argon2.Verify(hashedPassword, plainPassword);
+        }
+
+        public class OtpEmail
+        {
+            public string Email { get; set; }
+            public string Otp { get; set; }
+        }
     }
 }
