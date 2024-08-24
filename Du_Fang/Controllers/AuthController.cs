@@ -166,27 +166,36 @@ namespace Du_Fang.Controllers
             }
         }
 
-        // [HttpPost("login")]
-        // public async Task<IActionResult> Login(UserLoginDto dto)
-        // {
-        //     var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
-        //     if (user == null)
-        //         return Unauthorized("Invalid credentials");
+         [HttpPost("login")]
+        public async Task<IActionResult> Login(UserLoginDto dto)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
+            if (user == null)
+                return Unauthorized(new { message = "Invalid email or password" });
 
-        //     var userSecurity = await _context.UserSecurities.SingleOrDefaultAsync(us => us.UserId == user.UserId);
-        //     if (userSecurity == null)
-        //         return Unauthorized("Invalid credentials");
+            var userSecurity = await _context.UserSecurities.SingleOrDefaultAsync(us => us.UserId == user.UserId);
+            if (userSecurity == null)
+                return Unauthorized(new { message = "Invalid email or password" });
 
-        //     if (!VerifyPassword(dto.Password, userSecurity.PasswordHash))
-        //         return Unauthorized("Invalid credentials");
+            if (!VerifyPassword(dto.Password, userSecurity.PasswordHash))
+                return Unauthorized(new { message = "Invalid email or password" });
 
-        //     user.GenerateOTP();
-        //     await _context.SaveChangesAsync();
+            var token = GenerateJwtToken(user);
 
-        //     await _emailSender.SendEmailAsync(user.Email, $"Your OTP is {user.Otp}. It will expire in 5 min.", "OTP for Du_Fang Login");
+            // Log authentication details
+            var authLog = new Authentication_Log
+            {
+                UserId = user.UserId,
+                LoginTime = DateTime.UtcNow,
+                IP_Address = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                DeviceInfo = HttpContext.Request.Headers["User-Agent"].ToString()
+            };
 
-        //     return Ok(new { message = "OTP sent. Please validate to complete login." });
-        // }
+            _context.AuthenticationLogs.Add(authLog);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Login successful", token });
+        }
 
         private string GenerateJwtToken(User user)
         {
