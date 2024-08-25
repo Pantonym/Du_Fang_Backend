@@ -139,14 +139,8 @@ namespace Du_Fang.Controllers
                 return NotFound("Account does not exist.");
             }
 
-            // --Second time testing amount, to protect the user as we are working with money
-            if (account.Balance < amount)
-            {
-                return BadRequest("Insufficient balance in the account.");
-            }
-
             // Update account and StarCoin balance
-            account.Balance -= amount;
+            account.Balance += amount;
             account.CoinBalance += starCoinAmount;
 
             // --Build the transaction
