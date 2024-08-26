@@ -76,6 +76,36 @@ namespace Du_Fang.Controllers
         [HttpPost("AccountTransfer")]
         public async Task<ActionResult<Transaction>> AccountTransfer(int fromAccountId, int toAccountId, decimal amount)
         {
+            // Find the fromAccount and toAccount
+            var fromAccount = await _context.Accounts.FindAsync(fromAccountId);
+            var toAccount = await _context.Accounts.FindAsync(toAccountId);
+
+            // Validation
+            if (fromAccount == null || toAccount == null)
+            {
+                return NotFound("One or both accounts do not exist.");
+            }
+
+            // Validate the fromAccount has enough money
+            if (fromAccount.Balance < amount)
+            {
+                return BadRequest("Insufficient balance in the sender's account.");
+            }
+
+            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Console.WriteLine($"Before Transfer - FromAccount Balance: {fromAccount.Balance}, ToAccount Balance: {toAccount.Balance}");
+
+            // Perform balance updates
+            fromAccount.Balance -= amount;
+            toAccount.Balance += amount;
+
+            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Console.WriteLine($"After Transfer - FromAccount Balance: {fromAccount.Balance}, ToAccount Balance: {toAccount.Balance}");
+
+            // Mark both accounts as modified
+            _context.Entry(fromAccount).State = EntityState.Modified;
+            _context.Entry(toAccount).State = EntityState.Modified;
+
             // Validate accounts, check balance, and perform transfer logic
             var transaction = new Transaction
             {
@@ -84,8 +114,6 @@ namespace Du_Fang.Controllers
                 Amount = amount,
                 TransactionType = "AccountTransfer",
                 Timestamp = DateTime.UtcNow
-
-                // TODO: Update the balance of the account (foreign key to the account, based on to and from accounts)
             };
 
             _context.Transactions.Add(transaction);
@@ -98,12 +126,18 @@ namespace Du_Fang.Controllers
         [HttpPost("AccountTopup")]
         public async Task<ActionResult<Transaction>> AccountTopup(int fromAccountId, decimal amount)
         {
+            // Log the incoming request
+            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Console.WriteLine($"AccountTopup called with fromAccountId: {fromAccountId}, amount: {amount}");
+
             // Validate account, check balance, and perform purchase logic
             // --Validation
             var account = await _context.Accounts.FindAsync(fromAccountId);
 
             if (account == null)
             {
+                Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                Console.WriteLine("Account not found.");
                 return NotFound("Account does not exist.");
             }
 
@@ -128,7 +162,7 @@ namespace Du_Fang.Controllers
 
         // POST: api/Transaction/StarCoinPurchase
         [HttpPost("StarCoinPurchase")]
-        public async Task<ActionResult<Transaction>> StarCoinPurchase(int fromAccountId, int starCoinAmount, decimal amount)
+        public async Task<ActionResult<Transaction>> StarCoinPurchase(int fromAccountId, int starCoins, decimal amount)
         {
             // Validate account, check balance, and perform purchase logic
             // --Validation
@@ -139,9 +173,23 @@ namespace Du_Fang.Controllers
                 return NotFound("Account does not exist.");
             }
 
+            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Console.WriteLine($"Star Coin Change called with fromAccountId: {fromAccountId}, amount: {amount}, Starcoins: {starCoins}");
+
             // Update account and StarCoin balance
             account.Balance += amount;
-            account.CoinBalance += starCoinAmount;
+            account.CoinBalance += starCoins;
+
+            // Determine transaction type based on whether coins are being bought or sold
+            string transType;
+            if (starCoins < 0)
+            {
+                transType = "StarcoinSell";
+            }
+            else
+            {
+                transType = "StarCoinPurchase";
+            }
 
             // --Build the transaction
             var transaction = new Transaction
@@ -149,12 +197,15 @@ namespace Du_Fang.Controllers
                 FromAccountId = fromAccountId,
                 ToAccountId = fromAccountId, //the user essentially transfers one form of money to another for themselves, and as such they are both receiver and sender.
                 Amount = amount,
-                TransactionType = "StarCoinPurchase",
+                TransactionType = transType,
                 Timestamp = DateTime.UtcNow
             };
 
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
+
+            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Console.WriteLine(transaction);
 
             return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
         }

@@ -39,6 +39,30 @@ namespace Du_Fang.Controllers
             return Ok(user);
         }
 
+        // GET: api/User/GetUserIdByEmail?email={email}
+        [HttpGet("GetUserIdByEmail")]
+        public async Task<ActionResult<int>> GetUserIdByEmail(string email)
+        {
+            // Find the user by email
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Find the account using the UserId
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UserId == user.UserId);
+
+            if (account == null)
+            {
+                return NotFound("Account not found.");
+            }
+
+            // Return the AccountId
+            return Ok(account.AccountId);
+        }
+
         // PUT: api/User/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
