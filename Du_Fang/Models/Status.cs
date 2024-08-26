@@ -9,7 +9,7 @@ public class Status
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int StatusId { get; set; }
 
-[Required]
+    [Required]
     public string StatusName { get; set; }
 
     public decimal TotalAmountCriteria { get; set; }
@@ -21,5 +21,5 @@ public class Status
     public decimal TransactionFee { get; set; }
 
     // Navigation property
-    public virtual ICollection<Account> ?Accounts { get; set; }
+    public virtual ICollection<Account>? Accounts { get; set; }
 }

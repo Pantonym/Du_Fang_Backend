@@ -166,7 +166,7 @@ namespace Du_Fang.Controllers
             }
         }
 
-         [HttpPost("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto dto)
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
@@ -194,7 +194,7 @@ namespace Du_Fang.Controllers
             _context.AuthenticationLogs.Add(authLog);
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Login successful", token });
+            return Ok(new { message = "Login successful", token, user.UserId });
         }
 
         private string GenerateJwtToken(User user)
