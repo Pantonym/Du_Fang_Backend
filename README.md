@@ -1,7 +1,7 @@
 ## <p align="center" style="text-decoration: none !important;padding:0;margin:0;">Mareli Lourens, Nico van Wyk, Luca Breebaart, CS Strijdom<br> 221119, 221179, 221345, 21100249 <br> Interactive Development 300 - Term 3</p>
 
 <p align="center">
-  <img src="./README/Icon.png" height="75" style="display: block; margin: 0 auto;">
+  <img src="./ReadMe/Icon.png" height="75" style="display: block; margin: 0 auto;">
 </p>
 
 ## <p align="center" style="text-decoration: none !important;padding:0;margin:0;">Cross-Platform Desktop Development</p>
@@ -29,7 +29,7 @@
 ## About the project:
 
 ### Product mockup:
-![Mockup](./README/Product_Mockup.png)
+![Mockup](./ReadMe/Product_Mockup.png)
 
 ### Project description:
 We developed a cross-platform desktop application that simulated an e-banking system. The project allowed account holders to manage their finances, including purchasing specific currencies, making transactions with other account holders, and withdrawing funds. A particularly intriguing aspect of this endeavor was the administrative functionalities, where an admin user could manage accounts, view transactions, and perform actions such as freezing accounts. The project placed a strong emphasis on secure authentication practices, including 2-factor authentication, and incorporated data summaries and visualizations to provide insights into user activity.
@@ -61,11 +61,11 @@ During the initial brainstorming phase of the project, we explored similar websi
 
 ### Wireframes:
 
-![dashboard](./README/dashboard.png)
-![transaction](./README/transaction.png)
-![single_coin_view](./README/single_coin_view.png)
-![admin](./README/admin.png)
-![admin2](./README/admin2.png)
+![dashboard](./ReadMe/dashboard.png)
+![transaction](./ReadMe/transaction.png)
+![single_coin_view](./ReadMe/single_coin_view.png)
+![admin](./ReadMe/admin.png)
+![admin2](./ReadMe/admin2.png)
 
 ## Development Process
 
