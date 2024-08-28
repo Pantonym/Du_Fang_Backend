@@ -1,5 +1,3 @@
-https://github.com/Pantonym/Du_Fang_Backend
-
 ## <p align="center" style="text-decoration: none !important;padding:0;margin:0;">Mareli Lourens, Nico van Wyk, Luca Breebaart, CS Strijdom<br> 221119, 221179, 221345, 21100249 <br> Interactive Development 300 - Term 3</p>
 
 <p align="center">
