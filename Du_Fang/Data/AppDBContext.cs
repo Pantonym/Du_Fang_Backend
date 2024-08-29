@@ -19,9 +19,10 @@ namespace Du_Fang
 
             // Seed the Status table
             modelBuilder.Entity<Status>().HasData(
-                new Status { StatusId = 1, StatusName = "Active", TotalAmountCriteria = 0, TransactionsCriteria = 0, AnnualInterestRate = 0.01, TransactionFee = 1 },
-                new Status { StatusId = 2, StatusName = "Silver", TotalAmountCriteria = 1000, TransactionsCriteria = 10, AnnualInterestRate = 0.02, TransactionFee = 0.5m },
-                new Status { StatusId = 3, StatusName = "Gold", TotalAmountCriteria = 10000, TransactionsCriteria = 100, AnnualInterestRate = 0.03, TransactionFee = 0 }
+                new Status { StatusId = 1, StatusName = "Bronze", TotalAmountCriteria = 0, TransactionsCriteria = 0, AnnualInterestRate = 0, TransactionFee = 0.20m },
+                new Status { StatusId = 2, StatusName = "Silver", TotalAmountCriteria = 5000, TransactionsCriteria = 10, AnnualInterestRate = 0.01, TransactionFee = 0.15m },
+                new Status { StatusId = 3, StatusName = "Gold", TotalAmountCriteria = 20000, TransactionsCriteria = 50, AnnualInterestRate = 0.02, TransactionFee = 0.10m },
+                new Status { StatusId = 4, StatusName = "Platinum", TotalAmountCriteria = 50000, TransactionsCriteria = 100, AnnualInterestRate = 0.03, TransactionFee = 0.05m }
             );
 
             // Define the one-to-one relationship between User and User_Security

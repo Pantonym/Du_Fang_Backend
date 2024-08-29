@@ -33,10 +33,7 @@ namespace Du_Fang.Controllers
         {
             var transaction = await _context.Transactions.FindAsync(id);
 
-            if (transaction == null)
-            {
-                return NotFound();
-            }
+            if (transaction == null) return NotFound();
 
             return transaction;
         }
@@ -72,6 +69,13 @@ namespace Du_Fang.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Transfers from one account to another in the local economy.
+        /// </summary>
+        /// <param name="fromAccountId"></param>
+        /// <param name="toAccountId"></param>
+        /// <param name="amount"></param>
+        /// <returns></returns>
         // POST: api/Transaction/AccountTransfer
         [HttpPost("AccountTransfer")]
         public async Task<ActionResult<Transaction>> AccountTransfer(int fromAccountId, int toAccountId, decimal amount)
@@ -93,7 +97,7 @@ namespace Du_Fang.Controllers
             }
 
             Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            Console.WriteLine($"Before Transfer - FromAccount Balance: {fromAccount.Balance}, ToAccount Balance: {toAccount.Balance}");
+            Console.WriteLine($"<color=green>Before Transfer - FromAccount Balance: {fromAccount.Balance}, ToAccount Balance: {toAccount.Balance}</color>");
 
             // Perform balance updates
             fromAccount.Balance -= amount;
