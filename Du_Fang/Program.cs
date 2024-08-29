@@ -17,8 +17,8 @@ Env.Load();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        //prevents endless loop of refering to eachother
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.ReferenceHandler = null;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
 builder.Services.AddEndpointsApiExplorer();
