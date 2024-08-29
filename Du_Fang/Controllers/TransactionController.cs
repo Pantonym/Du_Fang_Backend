@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Du_Fang;
+using Du_Fang.Services;
 
 namespace Du_Fang.Controllers
 {
@@ -14,10 +15,12 @@ namespace Du_Fang.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly AppDBContext _context;
+        private readonly AccountService _accountService;
 
-        public TransactionController(AppDBContext context)
+        public TransactionController(AppDBContext context, AccountService accountService)
         {
             _context = context;
+            _accountService = accountService;
         }
 
         // GET: api/Transaction
@@ -123,6 +126,9 @@ namespace Du_Fang.Controllers
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
+            // Check and upgrade status
+            await _accountService.CheckAndUpgradeStatus(fromAccountId);
+
             return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
         }
 
@@ -160,6 +166,50 @@ namespace Du_Fang.Controllers
 
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
+
+            // Check and upgrade status
+            await _accountService.CheckAndUpgradeStatus(fromAccountId);
+
+            return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
+        }
+
+        // POST: api/Transaction/AccountWithdraw
+        [HttpPost("AccountWithdraw")]
+        public async Task<ActionResult<Transaction>> AccountWithdraw(int fromAccountId, decimal amount)
+        {
+            // Log the incoming request
+            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Console.WriteLine($"AccountWithdraw called with fromAccountId: {fromAccountId}, amount: {amount}");
+
+            // Validate account, check balance, and perform purchase logic
+            // --Validation
+            var account = await _context.Accounts.FindAsync(fromAccountId);
+
+            if (account == null)
+            {
+                Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                Console.WriteLine("Account not found.");
+                return NotFound("Account does not exist.");
+            }
+
+            // --Update the account balance
+            account.Balance -= amount;
+
+            // --Build transaction
+            var transaction = new Transaction
+            {
+                FromAccountId = fromAccountId,
+                ToAccountId = fromAccountId, //the user essentially transfers one form of money to another for themselves, and as such they are both receiver and sender.
+                Amount = amount,
+                TransactionType = "AccountWithdraw",
+                Timestamp = DateTime.UtcNow
+            };
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            // Check and upgrade status
+            await _accountService.CheckAndUpgradeStatus(fromAccountId);
 
             return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
         }
@@ -208,8 +258,8 @@ namespace Du_Fang.Controllers
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
-            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            Console.WriteLine(transaction);
+            // Check and upgrade status
+            await _accountService.CheckAndUpgradeStatus(fromAccountId);
 
             return CreatedAtAction("GetTransaction", new { id = transaction.TransactionId }, transaction);
         }
