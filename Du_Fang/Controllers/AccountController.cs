@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Du_Fang;
+using Du_Fang.Services;
 
 namespace Du_Fang.Controllers
 {
@@ -14,9 +15,9 @@ namespace Du_Fang.Controllers
     public class AccountController : ControllerBase
     {
         private readonly AppDBContext _context;
-        private readonly IAccountService _accountService;
+        private readonly AccountService _accountService;
 
-        public AccountController(AppDBContext context, IAccountService accountService)
+        public AccountController(AppDBContext context, AccountService accountService)
         {
             _context = context;
             _accountService = accountService;
@@ -167,60 +168,4 @@ namespace Du_Fang.Controllers
         }
 
     }
-}
-
-public interface IAccountService
-{
-    Task FreezeAccount(Account account);
-    Task FreezeAccount(Du_Fang.Account account);
-    Task UnfreezeAccount(Account account);
-    Task UnfreezeAccount(Du_Fang.Account account);
-}
-
-public class AccountService : IAccountService
-{
-    private readonly AppDBContext _context;
-
-    public AccountService(AppDBContext context)
-    {
-        _context = context;
-    }
-
-    public async Task FreezeAccount(Account account)
-    {
-        if (account == null) throw new ArgumentNullException(nameof(account));
-        account.Active = false; // Set status as frozen
-        await _context.SaveChangesAsync();
-    }
-
-    public Task FreezeAccount(Du_Fang.Account account)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task UnfreezeAccount(Account account)
-    {
-        if (account == null) throw new ArgumentNullException(nameof(account));
-        account.Active = true; // Set status as active
-        await _context.SaveChangesAsync();
-    }
-
-    public Task UnfreezeAccount(Du_Fang.Account account)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-// Account Model
-
-public class Account
-{
-    public int AccountId { get; set; }
-    public bool Active { get; set; }
-}
-
-public enum AccountStatus
-{
-    Active,
-    Frozen
 }

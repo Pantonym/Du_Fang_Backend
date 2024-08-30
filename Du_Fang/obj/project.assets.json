@@ -13679,19 +13679,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\USER-PC\\.nuget\\packages\\": {}
+    "C:\\Users\\nicoj\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
+      "projectUniqueName": "C:\\Users\\nicoj\\Desktop\\School\\Year 3\\DV300\\Term 3\\Repository\\Du_Fang_Backend\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
       "projectName": "Du_Fang",
-      "projectPath": "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
-      "packagesPath": "C:\\Users\\USER-PC\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\USER-PC\\Documents\\GitHub\\Du_Fang_Backend\\Du_Fang\\obj\\",
+      "projectPath": "C:\\Users\\nicoj\\Desktop\\School\\Year 3\\DV300\\Term 3\\Repository\\Du_Fang_Backend\\Du_Fang_Backend\\Du_Fang\\Du_Fang.csproj",
+      "packagesPath": "C:\\Users\\nicoj\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nicoj\\Desktop\\School\\Year 3\\DV300\\Term 3\\Repository\\Du_Fang_Backend\\Du_Fang_Backend\\Du_Fang\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\USER-PC\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\nicoj\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

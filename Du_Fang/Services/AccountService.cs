@@ -48,4 +48,24 @@ public class AccountService
         _context.Entry(account).State = EntityState.Modified;
         await _context.SaveChangesAsync();
     }
+
+    public async Task FreezeAccount(Account account)
+    {
+        if (account == null) throw new ArgumentNullException(nameof(account));
+        account.Active = false; // Set status as frozen
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UnfreezeAccount(Account account)
+    {
+        if (account == null) throw new ArgumentNullException(nameof(account));
+        account.Active = true; // Set status as active
+        await _context.SaveChangesAsync();
+    }
+}
+
+public interface IAccountService
+{
+    Task FreezeAccount(Account account);
+    Task UnfreezeAccount(Account account);
 }
