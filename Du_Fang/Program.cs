@@ -18,7 +18,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         // options.JsonSerializerOptions.ReferenceHandler = null;
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve; // handling circular referencing
+        options.JsonSerializerOptions.ReferenceHandler = null;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
