@@ -50,28 +50,12 @@ public class AccountService
             _context.Entry(account).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             Console.WriteLine("Sucessfully updated status");
         }
         catch (System.Exception ex)
         {
-            Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             Console.WriteLine($"Error during status upgrade: {ex.Message}");
             throw;
         }
-    }
-
-    public async Task FreezeAccount(Account account)
-    {
-        if (account == null) throw new ArgumentNullException(nameof(account));
-        account.Active = false; // Set status as frozen
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task UnfreezeAccount(Account account)
-    {
-        if (account == null) throw new ArgumentNullException(nameof(account));
-        account.Active = true; // Set status as active
-        await _context.SaveChangesAsync();
     }
 }

@@ -15,12 +15,10 @@ namespace Du_Fang.Controllers
     public class AccountController : ControllerBase
     {
         private readonly AppDBContext _context;
-        private readonly AccountService _accountService;
 
         public AccountController(AppDBContext context, AccountService accountService)
         {
             _context = context;
-            _accountService = accountService;
         }
 
         // GET: api/Account
@@ -112,29 +110,20 @@ namespace Du_Fang.Controllers
         {
             try
             {
-                // Log the received ID
-                Console.WriteLine($"Received ID: {id}");
-
                 // Fetch the account with the provided ID
                 var account = await _context.Accounts.FindAsync(id);
 
                 // Log the retrieved account details
                 if (account == null)
                 {
-                    Console.WriteLine($"Account with ID {id} not found.");
                     return NotFound($"Account with ID {id} not found.");
                 }
-
-                Console.WriteLine($"Account before freezing: {account}");
 
                 // Implement the logic to freeze the account here
                 account.Active = false; // Example property to indicate the account is frozen
 
                 // Save changes to the database
                 await _context.SaveChangesAsync();
-
-                // Log success message
-                Console.WriteLine($"Account with ID {id} has been successfully frozen.");
 
                 return Ok("Account frozen successfully.");
             }
@@ -158,7 +147,9 @@ namespace Du_Fang.Controllers
                     return NotFound();
                 }
 
-                await _accountService.UnfreezeAccount(account);
+                account.Active = true;
+                await _context.SaveChangesAsync();
+
                 return Ok("Account unfrozen successfully.");
             }
             catch (Exception ex)
