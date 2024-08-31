@@ -17,8 +17,8 @@ Env.Load();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // options.JsonSerializerOptions.ReferenceHandler = null;
         options.JsonSerializerOptions.ReferenceHandler = null;
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 

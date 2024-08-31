@@ -126,6 +126,9 @@ namespace Du_Fang.Controllers
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
+            // Log before upgrading status
+            Console.WriteLine("Transaction saved, attempting to upgrade status.");
+
             // Check and upgrade status
             await _accountService.CheckAndUpgradeStatus(fromAccountId);
 
@@ -167,6 +170,9 @@ namespace Du_Fang.Controllers
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
+            // Log before upgrading status
+            Console.WriteLine("Transaction saved, attempting to upgrade status.");
+
             // Check and upgrade status
             await _accountService.CheckAndUpgradeStatus(fromAccountId);
 
@@ -207,6 +213,9 @@ namespace Du_Fang.Controllers
 
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
+
+            // Log before upgrading status
+            Console.WriteLine("Transaction saved, attempting to upgrade status.");
 
             // Check and upgrade status
             await _accountService.CheckAndUpgradeStatus(fromAccountId);
@@ -257,6 +266,9 @@ namespace Du_Fang.Controllers
 
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
+
+            // Log before upgrading status
+            Console.WriteLine("Transaction saved, attempting to upgrade status.");
 
             // Check and upgrade status
             await _accountService.CheckAndUpgradeStatus(fromAccountId);
