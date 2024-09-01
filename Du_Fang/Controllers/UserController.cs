@@ -123,5 +123,18 @@ namespace Du_Fang.Controllers
         {
             return _context.Users.Any(e => e.UserId == id);
         }
+
+        [HttpGet("account/{userId}")]
+        public async Task<ActionResult<Account>> GetAccountByUserId(int userId)
+        {
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.UserId == userId);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return account;
+        }
     }
 }
